@@ -79,9 +79,9 @@ SigningMnemonic= drip option mansion final void breeze govern fringe layer like 
 
 The payment command requires to sign the extrinsic. _SigningAccount_ is used to specify the account used for the signature, while the secret to generate the key could be specified in tree ways; _SigningMnemonic_, _SigningSeed_ or _SigningUri_. 
 
-1. Signing information must be secret. Be careful on not exposing the configuration file if it contains signing information.
+1. Signing information must be secret. Be careful to not expose the configuration file if it contains signing information.
 2. Use a Signing Account with a small balance to sign petitions in order to minimize the impact of secret's leak. Do not use a validator account.
-3. Do not use validator (cMix) system's xx chain service to lower risk of node takeover. If you can't have a dedicated xx chain instance for payouts, use Gateway's xx chain service.
+3. Do not use validator (cMix) system's xx chain service to lower the risk of node takeover. If you can't have a dedicated xx chain instance for payouts, use Gateway's xx chain service.
 
 If you don't want to store SigningMnemonic in a configuration file, that and other information can also be provided at run-time:
 
@@ -161,4 +161,4 @@ payctl pay -m 2
 
 If a payout is successful, an extrinsic hash appears in the output.
 
-Copy that hash, go to https://explorer.xx.network and search for the hash to find the transaction details.
+Copy that hash, go to https://explorer.xx.network and search for the hash to find transaction details.

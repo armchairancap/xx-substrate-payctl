@@ -1,8 +1,10 @@
 # xx Network Validator Pay Control
 
-Simple shell utility that manages the payouts for xx Network.
+payctl is a simple Python-based CLI utility that manages the payouts for xx Network validators.
 
-This repository is an xx Network-specific fork of [substrate-payctl](https://github.com/stakelink/substrate-payctl), so don't install both on the same system.
+This repository is an xx Network-specific fork of [substrate-payctl](https://github.com/stakelink/substrate-payctl), so don't install the both in the same Python enviornment.
+
+There's no "analytics" or any garbage like that. Feel free to inspect the code.
 
 ## About 
 
@@ -21,10 +23,11 @@ To install, find a Linux system with Python 3 that can connect to xx Network cha
 Clone the repository and install the package:
 
 ```sh
-$ python3 -m pip install substrate-interface
-$ # install other modules if necessary
-$ git clone http://github.com/armchairancap/xx-substrate-payctl
-$ pip install xx-substrate-payctl/
+python3 -m pip install substrate-interface==1.7.4
+# install other modules if necessary
+git clone http://github.com/armchairancap/xx-substrate-payctl
+# inspect contents if you'd like but do NOT enter the subdirectory
+python3 -m pip install xx-substrate-payctl/
 ```
 
 ## Usage
@@ -35,28 +38,40 @@ Common workflow:
 
 - Go to https://wallet.xx.network and create a new account for signing (payouts). Fund it with 5 xx for transaction fees.
 - Edit the configuration file you plan to use: specify your paying (Signing) account, and validating account(s) for which you want to make payouts. Change xx chain service endpoint if it's not on localhost.
-- Run `payctl pay` (example commands can be found in Examples, further below) to list or pay out rewards
 
-default.conf will likely be copied to `$HOME/.local/etc/payctl/default.conf` or `/usr/local/etc/payctl/default.conf` depending on how the tool was installed, but you can use your own configuration file (e.g. `-c $HOME/my.conf`).
-
+```sh
+mkdir $HOME/.config/payctl
+nano $HOME/.config/payctl/default.conf
+chmod 0600 $HOME/.config/payctl/default.conf
 ```
-$ payctl
-usage: payctl [-h] [-c CONFIG] [-n NETWORK] [-r RPCURL] [-d DEPTHERAS]
-              {list,pay} ...
 
-optional arguments:
+- Run `payctl pay -d 2` to pay any rewards from past 2 eras. 
+
+Additional examples can be found further below.
+
+```sh
+$ payctl -h
+usage: payctl [-h] [-c CONFIG] [-r RPC_URL] [-n NETWORK] [-d DEPTHERAS] {list,pay} ...
+
+options:
   -h, --help            show this help message and exit
   -c CONFIG, --config CONFIG
-                        specify config file
+                        read config from a file. Example: .config/payctl/default.conf
+  -r RPC_URL, --rpcurl RPC_URL
+                        substrate RPC URL. Example: ws://2.2.2.2:63007
   -n NETWORK, --network NETWORK
-  -r RPCURL, --rpc-url RPCURL
-  -d DEPTHERAS, --depth-eras DEPTHERAS
+                        name of the network to connect. Hard-coded to xx Network
+  -d DEPTHERAS, --deptheras DEPTHERAS
+                        depth of eras to include
 
-subcommands:
-  {list,pay}
-    list
-    pay
+Commands:
+  {list,pay}            get help with: list -h and pay -h
+    list                list rewards
+    pay                 pay rewards
+
 ```
+
+Since the default config path is `.config/payctl/default.conf`, you don't have to provide it if executing from $HOME. Otherwise provide `-c CONFIG`.
 
 ### Configuration 
 
@@ -65,8 +80,9 @@ default.conf contains default parameters. `RPCURL` tells the tools how to connec
 Here, Signing Account is `6aK...` - it is used to create and broadcast payout transactions and pays transaction fees. Signing Mnemonic is one of several ways to access that account's wallet. That's followed by at least one validator wallet for which to pay out unclaimed rewards (`6Vm...`, `6YLR...`):
 
 ```raw
+# $HOME/.config/payctl/default.conf
 [Defaults]
-RPCURL = ws://127.0.0.1:63007/
+RPCURL = ws://127.0.0.1:63007
 Network = xx network
 DepthEras = 7
 MinEras = 1
@@ -89,7 +105,7 @@ If you don't want to store SigningMnemonic in a configuration file, that and oth
 $ payctl pay --help
 usage: payctl pay [-h] [-m MINERAS] [-a SIGNINGACCOUNT] [-n SIGNINGMNEMONIC]
                   [-s SIGNINGSEED] [-u SIGNINGURI]
-                  [validators [validators ...]]
+                  [validator [validator ...]]
 
 positional arguments:
   validators            specify validator
@@ -104,6 +120,8 @@ optional arguments:
 ```
 
 ### Examples
+
+These examples assume there's a valid default configuration file.
 
 List rewards for default validators (NOTE: execution may take 5-10 seconds per each era and address):
 
@@ -129,8 +147,8 @@ Era: 507
 
 List rewards for a specific validator:
 
-```sh
-$ payctl list 6YLRyPaxP9ugZYmLpnhmoYrZT3VLEz3JTQrjbg6wVJpspYFu
+```sh 
+$ payctl list 6YLRyPaxP9ugZYmLpnhmoYrZT3VLEz3JTQrjbg6wVJpspYFu 6YLRyPaxP9ugZYmLpnhmoYrZT3VLEz3JTQrjbg6wVJpspYFu
 Era: 507
   6YLRyPaxP9ugZYmLpnhmoYrZT3VLEz3JTQrjbg6wVJpspYFu => 40.643866310648 xx (claimed)
 ```
@@ -143,7 +161,7 @@ Era: 507
   6YLRyPaxP9ugZYmLpnhmoYrZT3VLEz3JTQrjbg6wVJpspYFu => 40.971542087938 xx (unclaimed)
 ```
 
-Pay rewards for the default validators (from default.conf):
+Pay rewards for the default validators (specified in your default.conf):
 
 ```sh
 payctl pay
@@ -159,6 +177,6 @@ payctl pay -m 2
 
 ## Finding transactions in xx Network Explorer
 
-If a payout is successful, an extrinsic hash appears in the output.
+If a payout is successful, an extrinsic hash appears in the output, as well as a link to the official xx Network explorer.
 
-Copy that hash, go to https://explorer.xx.network and search for the hash to find transaction details.
+Click on the link or copy the extrinsics hash and go to https://explorer.xx.network to view transaction details.

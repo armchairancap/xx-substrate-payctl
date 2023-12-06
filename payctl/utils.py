@@ -14,7 +14,7 @@ def get_config(args, config, key, section='Defaults'):
 
 
 #
-# get_eras_rewards_point - Collect the ErasRewardPoints (total and individual) for a given range of eras.
+# get_eras_rewards_point - Collect the ErasRewardPoints (total and invididual) for a given range of eras.
 #
 def get_eras_rewards_point(substrate, start, end):
     eras_rewards_point = {}
@@ -62,7 +62,7 @@ def get_eras_validator_rewards(substrate, start, end):
 
 #
 # get_eras_payment_info - Combine information from ErasRewardPoints and ErasValidatorReward for given
-#                         range of eras to report the amount of per validator instead of era points.
+#                         range of eras to repor the amount of per validator instead of era points.
 #
 def get_eras_payment_info(substrate, start, end):
     eras_rewards_point = get_eras_rewards_point(substrate, start, end)
@@ -86,10 +86,10 @@ def get_eras_payment_info(substrate, start, end):
 
 #
 # get_eras_payment_info_filtered - Similar than get_eras_payment_info but applying some filters;
-#                                  1 . Include only eras containing given accounts.
+#                                  1 . Include only eras containing given acconts.
 #                                  2 . Include only eras containing unclaimed rewards.
 #
-#                                  NOTE: The returned structure is slightly different than
+#                                  NOTE: The returned structure is slighly different than
 #                                        get_eras_payment_info
 #
 def get_eras_payment_info_filtered(substrate, start, end, accounts=[], only_unclaimed=False):
@@ -217,7 +217,7 @@ def format_balance_to_symbol(substrate, amount, amount_decimals=0):
     formatted = amount / 10 ** (substrate.token_decimals - amount_decimals)
     formatted = "{:.{}f}".format(formatted, substrate.token_decimals)
 
-    # expected format -> 5.780520362127 KSM
+    # expected format -> 5.780520362127 xx 
     return f"{formatted} {substrate.token_symbol}"
 
 
@@ -226,6 +226,7 @@ def format_balance_to_symbol(substrate, amount, amount_decimals=0):
 # 
 def get_ss58_address_format(network):
     network = network.lower()
+
     if network == "polkadot": return 0
     if network == "sr25519": return 1
     if network == "kusama": return 2
@@ -280,8 +281,9 @@ def get_ss58_address_format(network):
     if network == "equilibrium": return 67
     if network == "sora": return 69
     if network == "social-network": return 252
+    if network == "xx-network": return 55
         
-    return 42 
+    return 55 
 
 #
 # get_type_preset - Gets the type preset for the network

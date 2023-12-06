@@ -2,21 +2,33 @@ from argparse import ArgumentParser
 from configparser import ConfigParser
 from collections import OrderedDict
 from substrateinterface import SubstrateInterface
-
 from .utils import *
-
+from time import sleep
 
 #
 # cmd_list - 'list' subcommand handler.
 #
 def cmd_list(args, config):
-    substrate = SubstrateInterface(url=get_config(args, config, 'rpcurl'), ss58_format=55, use_remote_preset=True)
+    substrate = SubstrateInterface(url="ws://127.0.0.1:63007",ss58_format=55,use_remote_preset=True)
     active_era = substrate.query(
         module='Staking',
         storage_function='ActiveEra'
     )
-    active_era = active_era.value['index']
 
+    count = 1
+    err = None
+    while count <= 3:
+        try:
+            active_era = substrate.query(module='Staking', storage_function='ActiveEra')
+            active_era = active_era.value['index']
+            break
+        except Exception as e:
+            err = e
+            print("Error ocurred, will retry:", err)
+            if count == 3:
+                raise
+            count += 1
+  
     depth = get_config(args, config, 'deptheras')
     depth = int(depth) if depth is not None else 84
 
@@ -43,16 +55,21 @@ def cmd_list(args, config):
 # cmd_pay - 'pay' subcommand handler.
 #
 def cmd_pay(args, config):
-    substrate = SubstrateInterface(
-        url=get_config(args, config, 'rpcurl'),
-        type_registry_preset=get_config(args, config, 'network')
-    )
+    substrate = SubstrateInterface(url="ws://127.0.0.1:63007",ss58_format=55,use_remote_preset=True)
 
-    active_era = substrate.query(
-        module='Staking',
-        storage_function='ActiveEra'
-    )
-    active_era = active_era.value['index']
+    count = 1
+    err = None
+    while count <= 5:
+        try:
+            active_era = substrate.query(module='Staking', storage_function='ActiveEra')
+            active_era = active_era.value['index']
+            break
+        except Exception as e:
+            err = e
+            print("Error ocurred, will retry:", err)
+            if count == 5:
+                raise
+            count += 1
 
     depth = get_config(args, config, 'deptheras')
     depth = int(depth) if depth is not None else 84
@@ -140,18 +157,19 @@ def cmd_pay(args, config):
     fees = extrinsic_receipt.total_fee_amount
 
     print(f"\t Extrinsic hash: {extrinsic_receipt.extrinsic_hash}")
+    print("\t Extrinsics link: https://explorer.xx.network/extrinsics/" + extrinsic_receipt.extrinsic_hash)
     print(f"\t Block hash: {extrinsic_receipt.block_hash}")
-    print(f"\t Total payout: {format_balance_to_symbol(substrate, fees)} ({fees})")
+    print(f"\t Total rewards released: {format_balance_to_symbol(substrate, fees)} ({fees})") # it's not "fees", it's really "rewards"
+    print("\t Transaction fee:", (expected_fees/10**9),"xx")
+    
     print(f"\t Status: {'ok' if extrinsic_receipt.is_success else 'error'}")
     if not extrinsic_receipt.is_success:
         print(f"\t Error message: {extrinsic_receipt.error_message.get('docs')}")
 
 def main():
     args_parser = ArgumentParser(prog='payctl')
-    args_parser.add_argument("-c", "--config", help="read config from a file", default="/usr/local/etc/payctl/default.conf")
-
-    args_parser.add_argument("-r", "--rpc-url", dest="rpcurl", help="xx chain RPC Url")
-    args_parser.add_argument("-n", "--network", dest="network", help="name of the network to connect (hardcoded to xx Network)")
+    args_parser.add_argument("-c", "--config", help="read config from a file", default=".config/payctl/default.conf")
+    args_parser.add_argument("-r", "--rpc-url", dest="rpcurl", help="substrate RPC Url")
     args_parser.add_argument("-d", "--depth-eras", dest="deptheras", help="depth of eras to include")
 
     args_subparsers = args_parser.add_subparsers(title="Commands", help='', dest="command")

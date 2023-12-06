@@ -5,15 +5,15 @@ import os
 from setuptools import setup
 
 NAME = 'payctl'
-DESCRIPTION = 'Simple command line application to control the payouts of xx validators.'
+DESCRIPTION = 'Simple command line application to control the payouts of xx Network validators.'
 URL = 'https://github.com/armchairancap/xx-substrate-payctl'
 EMAIL = 'armchairancap@users.noreply.github.com'
 AUTHOR = 'AA'
-REQUIRES_PYTHON = '>=3.6.0'
+REQUIRES_PYTHON = '>=3.9.0'
 VERSION = None
-LICENSE = 'MIT'
+LICENSE = 'MIT License'
 REQUIRED = [
-    'substrate-interface>=1.3.0'
+    'substrate-interface>=1.6.4'
 ]
 
 here = os.path.abspath(os.path.dirname(__file__))

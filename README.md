@@ -2,7 +2,7 @@
 
 payctl is a simple Python-based CLI utility that manages the payouts for xx Network validators.
 
-This repository is an xx Network-specific fork of [substrate-payctl](https://github.com/stakelink/substrate-payctl), so don't install the both in the same Python enviornment.
+This repository is an xx Network-specific fork of [substrate-payctl](https://github.com/stakelink/substrate-payctl), so don't install the both in the same Python environment.
 
 There's no "analytics" or any garbage like that. Feel free to inspect the code.
 
@@ -123,7 +123,7 @@ optional arguments:
 
 These examples assume there's a valid default configuration file.
 
-List rewards for default validators (NOTE: execution may take 5-10 seconds per each era and address):
+List rewards for default validators (NOTE: execution may take 5-10 seconds per each era and validator address):
 
 ```sh
 $ payctl list

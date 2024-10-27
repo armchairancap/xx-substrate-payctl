@@ -9,7 +9,7 @@ from time import sleep
 # cmd_list - 'list' subcommand handler.
 #
 def cmd_list(args, config):
-    substrate = SubstrateInterface(url="ws://127.0.0.1:63007",ss58_format=55,use_remote_preset=True)
+    substrate = SubstrateInterface(url="ws://127.0.0.1:63007",ss58_format=55,use_remote_preset=False)
     active_era = substrate.query(
         module='Staking',
         storage_function='ActiveEra'
@@ -55,7 +55,7 @@ def cmd_list(args, config):
 # cmd_pay - 'pay' subcommand handler.
 #
 def cmd_pay(args, config):
-    substrate = SubstrateInterface(url="ws://127.0.0.1:63007",ss58_format=55,use_remote_preset=True)
+    substrate = SubstrateInterface(url="ws://127.0.0.1:63007",ss58_format=55,use_remote_preset=False)
 
     count = 1
     err = None

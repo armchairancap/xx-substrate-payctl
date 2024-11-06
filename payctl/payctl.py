@@ -101,7 +101,8 @@ def cmd_pay(args, config):
     keypair = get_keypair(args, config)
 
     payout_calls = []
-    for era in eras_payment_info:
+    
+    for era in eras_payment_info:        
         for accountId in eras_payment_info[era]:
             payout_calls.append({
                 'call_module': 'Staking',
@@ -123,7 +124,7 @@ def cmd_pay(args, config):
     payment_info = substrate.get_payment_info(call=call, keypair=keypair)
     account_info = get_account_info(substrate, get_config(args, config, 'signingaccount'))
 
-    expected_fees = payment_info['partialFee']
+    expected_fees = payment_info['partialFee']    
     free_balance = account_info['data']['free']
     existential_deposit = get_existential_deposit(substrate)
 
@@ -143,6 +144,15 @@ def cmd_pay(args, config):
         nonce=account_info['nonce'],
         signature=signature
     )
+    total_rewards = sum(
+            entry['amount']
+            for key, value in eras_payment_info.items()
+            for entry in value.values()
+        )
+    if total_rewards != None and total_rewards > 0:
+        print("Total rewards to pay out:", total_rewards)
+    else:
+        print("Total rewards is None or 0")
 
     print(
         "Submitting batch extrinsic to claim " + 
@@ -154,17 +164,17 @@ def cmd_pay(args, config):
         wait_for_inclusion=True
     )
 
-    fees = extrinsic_receipt.total_fee_amount
+    # fees = extrinsic_receipt.total_fee_amount
 
-    print(f"\t Extrinsic hash: {extrinsic_receipt.extrinsic_hash}")
-    print("\t Extrinsics link: https://explorer.xx.network/extrinsics/" + extrinsic_receipt.extrinsic_hash)
-    print(f"\t Block hash: {extrinsic_receipt.block_hash}")
-    print(f"\t Total rewards released: {format_balance_to_symbol(substrate, fees)} ({fees})") # it's not "fees", it's really "rewards"
-    print("\t Transaction fee:", (expected_fees/10**9),"xx")
-    
-    print(f"\t Status: {'ok' if extrinsic_receipt.is_success else 'error'}")
-    if not extrinsic_receipt.is_success:
-        print(f"\t Error message: {extrinsic_receipt.error_message.get('docs')}")
+    if extrinsic_receipt.is_success:
+        print("Total rewards paid out (XX):", total_rewards)        
+        print("Extrinsic in xx Network Explorer: https://explorer.xx.network/extrinsics/" + extrinsic_receipt.extrinsic_hash)
+        print(f"Extrinsic hash: {extrinsic_receipt.extrinsic_hash}")
+        print(f"Block hash: {extrinsic_receipt.block_hash}")
+        print(f"Transaction status: {'ok' if extrinsic_receipt.is_success else 'error'}")
+    else:
+        print(f"Error message: {extrinsic_receipt.error_message.get('docs')}")
+
 
 def main():
     args_parser = ArgumentParser(prog='payctl')

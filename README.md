@@ -23,7 +23,7 @@ To install, find a Linux system with Python 3 that can connect to xx Network cha
 Clone the repository and install the package:
 
 ```sh
-python3 -m pip install substrate-interface==1.7.4
+python3 -m pip install substrate-interface==1.7.10
 # install other modules if necessary
 git clone http://github.com/armchairancap/xx-substrate-payctl
 # inspect contents if you'd like but do NOT enter the subdirectory
@@ -36,8 +36,8 @@ After installing the package the _payctl_ executable should be available on the 
 
 Common workflow:
 
-- Go to https://wallet.xx.network and create a new account for signing (payouts). Fund it with 5 xx for transaction fees.
-- Edit the configuration file you plan to use: specify your paying (Signing) account, and validating account(s) for which you want to make payouts. Change xx chain service endpoint if it's not on localhost.
+- Go to https://wallet.xx.network and create a new account for signing (payout transactions). Fund it with 5 xx for transaction fees.
+- Edit the configuration file you plan to use: specify your paying (signing) account, and validating account(s) for which you want to make payouts. Change xx chain service endpoint if it's not on localhost.
 
 ```sh
 mkdir $HOME/.config/payctl

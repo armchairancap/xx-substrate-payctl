@@ -167,7 +167,8 @@ def cmd_pay(args, config):
     # fees = extrinsic_receipt.total_fee_amount
 
     if extrinsic_receipt.is_success:
-        print("Total rewards paid out (XX):", total_rewards)        
+        print("Total rewards paid out (XX):", total_rewards)
+        print("Transaction fee (XX):", (extrinsic_receipt.total_fee_amount * 0.00000001))
         print("Extrinsic in xx Network Explorer: https://explorer.xx.network/extrinsics/" + extrinsic_receipt.extrinsic_hash)
         print(f"Extrinsic hash: {extrinsic_receipt.extrinsic_hash}")
         print(f"Block hash: {extrinsic_receipt.block_hash}")
